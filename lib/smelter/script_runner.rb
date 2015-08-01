@@ -1,6 +1,8 @@
-module Stretched
+module Smelter
   class ScriptRunner
-    include Stretched::DocQueries
+    Smelter::Settings.runner_includes.each do |mod|
+      include mod
+    end
 
     attr_reader :attributes, :context
     attr_accessor :user

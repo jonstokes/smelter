@@ -1,4 +1,4 @@
-module Stretched
+module Smelter
   class DefinitionProxy
     attr_reader :script_name
     attr_reader :extensions
@@ -15,7 +15,7 @@ module Stretched
       runner = ScriptRunner.new
 
       # Define all locally registered extensions on this runner instance
-      Extension.registry.each_pair do |extname, block|
+      Smelter::Settings.extension_class.registry.each_pair do |extname, block|
         next unless matches_extensions_glob?(extname.to_s)
         runner.instance_eval(&block)
       end
@@ -29,7 +29,7 @@ module Stretched
     end
 
     def extension(&block)
-      Extension.register(script_name, &block)
+      Smelter::Settings.extension_class.register(script_name, &block)
     end
 
     private
