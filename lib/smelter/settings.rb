@@ -1,7 +1,7 @@
 module Smelter
   module Settings
 
-    class SettingsData < Struct.new(:logger, :script_class, :extension_class)
+    class SettingsData < Struct.new(:logger)
     end
 
     def self.configuration
@@ -10,16 +10,6 @@ module Smelter
 
     def self.configure
       yield configuration
-    end
-
-    def self.script_class
-      return unless configured?
-      configuration.script_class
-    end
-
-    def self.extension_class
-      return unless configured?
-      configuration.extension_class
     end
 
     def self.logger

@@ -15,9 +15,7 @@ module Smelter
     # end
 
     def self.included(base)
-      Smelter::Settings.configure do |config|
-        config.extension_class = base
-      end
+      Smelter::DefinitionProxy.extension_class = base
 
       base.class_eval do
         extend ClassMethods
@@ -30,9 +28,10 @@ module Smelter
 
     module ClassMethods
       def register_all
-        self.all_names do |name|
-          next if registry[name.to_s]
-          extension = find_by(name: name)
+        self.all_names.each do |name|
+          name = name.to_s
+          next if registry[name]
+          extension = find_by_name(name)
           extension.register
         end
       end

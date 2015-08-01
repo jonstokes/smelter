@@ -1,4 +1,3 @@
-require "buzzsaw"
 require "thread_safe"
 require "smelter/version"
 require "smelter/settings"

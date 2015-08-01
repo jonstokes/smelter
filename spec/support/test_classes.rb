@@ -42,7 +42,7 @@ module Test
       index.include?(id)
     end
 
-    # => private
+    private
 
     def connect_to_redis
       @index  = Redis::List.new(self.class.name)
@@ -56,6 +56,8 @@ module Test
   end
 
   class Extension < Script
+    include Smelter::Extendable
+    
     def self.all_names
       index.map { |id| Extension.find(id).name }
     end

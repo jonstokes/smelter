@@ -21,7 +21,7 @@ module Smelter
     def run(instance={})
       attributes.each do |attribute_name, value|
         result = value.is_a?(Proc) ? value.call(instance) : value
-        instance[attribute_name] = result
+        instance[attribute_name.to_s] = result
       end
       instance
     end
