@@ -11,7 +11,7 @@ module Smelter
       include mod
     end
 
-    attr_reader :attributes, :context
+    attr_reader   :attributes, :context
     attr_accessor :user
 
     def initialize
@@ -37,10 +37,7 @@ module Smelter
     end
 
     def load_registration(opts)
-      # FIXME: I have to find a way to secure this so that
-      # you can't access other users' registrations in scripts
-      reg_type = "Stretched::#{opts[:type].to_s.capitalize}".constantize
-      reg_type.find(opts[:key], user)
+      opts[:klass].find_by(name: opts[:name])
     end
 
     def method_missing(name, *args, &block)

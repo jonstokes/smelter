@@ -1,63 +1,52 @@
 module Smelter
   module Scriptable
+
+    # Scriptable classes must support the following methods
+    # def self.find_by_name(name)
+    #   returns a script object
+    # end
+    #
+    # def name
+    #   returns the name of the script
+    # end
+    #
+    # def source
+    #   returns the source file for the script
+    # end
+
     def self.included(base)
       Smelter::Settings.configure do |config|
         config.script_class = base
+      end
+
+      base.class_eval do
+        extend ClassMethods
       end
     end
 
     def register
       # NOTE: This returns a populated instance of ScriptRunner
       # that has all extensions defined on it and contains
-      # Procs for the code defined in @data
-      runner = instance_eval data, key, 1
-      runner.user = user
-      runner
+      # Procs for the code defined in source
+      instance_eval source, name, 1
     end
 
-    def self.runner_include(mod)
-      @runner_includes ||= []
-      @runner_includes << mod
-    end
+    module ClassMethods
+      def runner_include(mod)
+        @runner_includes ||= []
+        @runner_includes << mod
+      end
 
-    def self.runner(opts)
-      key = opts[:name]
-      return ScriptRunner.new unless key
-      script = find_by(name: name)
-      script.register
-    end
+      def runner(name=nil)
+        return ScriptRunner.new unless name
+        script = find_by_name(name)
+        script.register
+      end
 
-    def self.define(name, &block)
-      definition_proxy = DefinitionProxy.new(name)
-      definition_proxy.instance_eval(&block)
-    end
-
-    def self.create_from_source(source, user=nil)
-      load_source(source).map do |reg_hash|
-        type = reg_hash.extract!(:type)[:type]
-        klass = "Stretched::#{type}".constantize
-        klass.create(reg_hash.merge(user: user))
+      def define(name, &block)
+        definition_proxy = DefinitionProxy.new(name)
+        definition_proxy.instance_eval(&block)
       end
     end
-
-    def self.create_from_file(filename, user=nil)
-      load_file(filename).map do |reg_hash|
-        type = reg_hash.extract!(:type)[:type]
-        klass = "Stretched::#{type}".constantize
-        klass.create(reg_hash.merge(user: user))
-      end
-    end
-
-    def self.load_file(filename)
-      source = get_source(filename)
-      load_source(source)
-    end
-
-    def self.load_source(source)
-      key = source[/(define)\s+\".*?\"/].split(/(define) \"/).last.split(/\"/).last
-      type = source[/Stretched::(Extension|Script)/].split('::').last
-      [{key: key, type: type , data: source}]
-    end
-
   end
 end
