@@ -8,8 +8,7 @@ module Test
   class Script
     include Redis::Objects
     include Smelter::Scriptable
-    include Test::Utils
-    
+
     runner_include Test::Utils
 
     attr_reader :id
@@ -31,16 +30,19 @@ module Test
     end
 
     def self.find_by_name(name)
+      retval = nil
       index.detect do |script_id|
-        self.find(script_id).name == name
+        script = find(script_id)
+        retval = script if script.name == name
       end
+      retval
     end
 
     def self.exists?(id)
       index.include?(id)
     end
 
-    private
+    # => private
 
     def connect_to_redis
       @index  = Redis::List.new(self.class.name)
@@ -50,6 +52,12 @@ module Test
 
     def self.index
       @index ||= Redis::List.new(self.name)
+    end
+  end
+
+  class Extension < Script
+    def self.all_names
+      index.map { |id| Extension.find(id).name }
     end
   end
 end
