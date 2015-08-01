@@ -1,16 +1,6 @@
 module Smelter
   class ScriptRunner
 
-    #class Script
-    #  include Smelter::Scriptable
-    #
-    #  runner_includes Buzzsaw::DSL
-    #end
-
-    Smelter::Settings.script_class.runner_includes.each do |mod|
-      include mod
-    end
-
     attr_reader   :attributes, :context
     attr_accessor :user
 

@@ -2,17 +2,24 @@ module Smelter
   module Scriptable
 
     # Scriptable classes must support the following methods
-    # def self.find_by_name(name)
-    #   returns a script object
-    # end
+    # class Script
+    #   include Smelter::Scriptable
     #
-    # def name
-    #   returns the name of the script
-    # end
+    #   runner_include Buzzsaw::DSL
     #
-    # def source
-    #   returns the source file for the script
+    #   def self.find_by_name(name)
+    #     returns a script object
+    #   end
+    #
+    #   def name
+    #     returns the name of the script
+    #   end
+    #
+    #   def source
+    #     returns the source file for the script
+    #   end
     # end
+
 
     def self.included(base)
       Smelter::Settings.configure do |config|
@@ -33,8 +40,7 @@ module Smelter
 
     module ClassMethods
       def runner_include(mod)
-        @runner_includes ||= []
-        @runner_includes << mod
+        Smelter::ScriptRunner.include(mod)
       end
 
       def runner(name=nil)
