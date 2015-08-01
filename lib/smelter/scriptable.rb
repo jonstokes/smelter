@@ -15,6 +15,11 @@ module Smelter
       runner
     end
 
+    def self.runner_include(mod)
+      @runner_includes ||= []
+      @runner_includes << mod
+    end
+
     def self.runner(opts)
       key = opts[:name]
       return ScriptRunner.new unless key
