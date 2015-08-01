@@ -9,6 +9,8 @@ module Test
     include Redis::Objects
     include Smelter::Scriptable
 
+    # This module will be included on every ScriptRunner so that
+    # every script will have access to its methods.
     runner_include Test::Utils
 
     attr_reader :id
@@ -19,9 +21,9 @@ module Test
       @index << @id unless @index.include?(@id)
     end
 
-    def name; @name.value; end
-    def name=(val); @name.value = val; end
-    def source; @source.value; end
+    def name;         @name.value;         end
+    def name=(val);   @name.value = val;   end
+    def source;       @source.value;       end
     def source=(val); @source.value = val; end
 
     def self.find(id)
@@ -57,7 +59,7 @@ module Test
 
   class Extension < Script
     include Smelter::Extendable
-    
+
     def self.all_names
       index.map { |id| Extension.find(id).name }
     end

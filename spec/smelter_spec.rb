@@ -2,8 +2,7 @@ require 'spec_helper'
 require 'securerandom'
 
 describe Smelter do
-  let(:extension_id)     { SecureRandom.uuid }
-  let(:extension)        { Test::Extension.new(extension_id) }
+  let(:extension)        { Test::Extension.new(SecureRandom.uuid) }
   let(:extension_name)   { "test/my_extension" }
   let(:extension_source) {
     <<-EOS
@@ -17,8 +16,7 @@ describe Smelter do
     EOS
   }
 
-  let(:script_id)     { SecureRandom.uuid }
-  let(:script)        { Test::Script.new(script_id) }
+  let(:script)        { Test::Script.new(SecureRandom.uuid) }
   let(:script_name)   { "test/my_script" }
   let(:script_source) {
     <<-EOS
