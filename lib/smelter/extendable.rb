@@ -44,6 +44,11 @@ module Smelter
         @registry ||= ThreadSafe::Cache.new
         @registry[extension_name.to_s] = block
       end
+
+      def define(name, &block)
+        definition_proxy = DefinitionProxy.new(name)
+        definition_proxy.instance_eval(&block)
+      end
     end
   end
 end

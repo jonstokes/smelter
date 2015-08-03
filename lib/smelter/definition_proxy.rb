@@ -15,9 +15,11 @@ module Smelter
       runner = ScriptRunner.new
 
       # Define all locally registered extensions on this runner instance
-      self.class.extension_class.registry.each_pair do |extension_name, block|
-        next unless matches_extensions_glob?(extension_name.to_s)
-        runner.instance_eval(&block)
+      if self.class.extension_class
+        self.class.extension_class.registry.each_pair do |extension_name, block|
+          next unless matches_extensions_glob?(extension_name.to_s)
+          runner.instance_eval(&block)
+        end
       end
 
       # Set up runner instance for use
@@ -33,11 +35,11 @@ module Smelter
     end
 
     def self.extension_class=(val)
-      @@extension_class = val
+      @extension_class = val
     end
 
     def self.extension_class
-      @@extension_class
+      @extension_class
     end
 
     private

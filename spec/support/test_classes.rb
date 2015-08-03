@@ -5,14 +5,8 @@ module Test
     end
   end
 
-  class Script
+  class StoredObject
     include Redis::Objects
-    include Smelter::Scriptable
-
-    # This module will be included on every ScriptRunner so that
-    # every script will have access to its methods.
-    runner_include Test::Utils
-
     attr_reader :id
 
     def initialize(id)
@@ -26,11 +20,6 @@ module Test
     def source;       @source.value;       end
     def source=(val); @source.value = val; end
 
-    def self.find(id)
-      raise "Script #{id} not found" unless exists?(id)
-      self.new(id)
-    end
-
     def self.find_by_name(name)
       retval = nil
       index.detect do |script_id|
@@ -38,6 +27,11 @@ module Test
         retval = script if script.name == name
       end
       retval
+    end
+
+    def self.find(id)
+      raise "Script #{id} not found" unless exists?(id)
+      self.new(id)
     end
 
     def self.exists?(id)
@@ -55,9 +49,18 @@ module Test
     def self.index
       @index ||= Redis::List.new(self.name)
     end
+
   end
 
-  class Extension < Script
+  class Script < StoredObject
+    include Smelter::Scriptable
+
+    # This module will be included on every ScriptRunner so that
+    # every script will have access to its methods.
+    runner_include Test::Utils
+  end
+
+  class Extension < StoredObject
     include Smelter::Extendable
 
     def self.all_names
