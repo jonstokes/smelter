@@ -63,8 +63,10 @@ module Test
   class Extension < StoredObject
     include Smelter::Extendable
 
-    def self.all_names
-      index.map { |id| Extension.find(id).name }
+    def self.find_each
+      index.each do |id|
+        yield new(id)
+      end
     end
   end
 end

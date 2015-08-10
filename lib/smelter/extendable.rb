@@ -2,8 +2,8 @@ module Smelter
   module Extendable
 
     # Extendable classes must support the following methods
-    # def self.all_names
-    #   In an ActiveRecord model this could be just pluck(:name)
+    # def self.find_each
+    #   I.e. as with an ActiveRecord model
     # end
     #
     # def name
@@ -28,10 +28,8 @@ module Smelter
 
     module ClassMethods
       def register_all
-        self.all_names.each do |name|
-          name = name.to_s
-          next if registry[name]
-          extension = find_by_name(name)
+        self.find_each do |extension|
+          next if registry[extension.id]
           extension.register
         end
       end
