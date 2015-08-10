@@ -2,11 +2,11 @@ require 'spec_helper'
 require 'securerandom'
 
 describe Smelter do
-  let(:extension)        { Test::Extension.new(SecureRandom.uuid) }
-  let(:extension_name)   { "test/my_extension" }
+  let(:extension_id)     { "test/my_extension" }
+  let(:extension)        { Test::Extension.new(extension_id) }
   let(:extension_source) {
     <<-EOS
-      Test::Extension.define "#{extension_name}" do
+      Test::Extension.define "#{extension_id}" do
         extension do
           def subtract(a, b)
             a - b
@@ -16,11 +16,11 @@ describe Smelter do
     EOS
   }
 
-  let(:script)        { Test::Script.new(SecureRandom.uuid) }
-  let(:script_name)   { "test/my_script" }
+  let(:script_id)     { "test/my_script" }
+  let(:script)        { Test::Script.new(script_id) }
   let(:script_source) {
     <<-EOS
-      Test::Script.define "#{script_name}" do
+      Test::Script.define "#{script_id}" do
         extensions 'test/*'
 
         script do
@@ -41,9 +41,7 @@ describe Smelter do
   }
 
   before(:each) do
-    script.name      = script_name
     script.source    = script_source
-    extension.name   = extension_name
     extension.source = extension_source
 
     Test::Extension.register_all
@@ -54,7 +52,7 @@ describe Smelter do
   end
 
   context "A ScriptRunner for a Script with included modules and extensions defined on it" do
-    subject { Test::Script.runner(script_name) }
+    subject { Test::Script.runner(script_id) }
 
     it { is_expected.to be_a(Smelter::ScriptRunner) }
     it { is_expected.to respond_to(:add) }
@@ -62,7 +60,7 @@ describe Smelter do
   end
 
   context "Running scripts" do
-    let(:runner) { Test::Script.runner(script_name) }
+    let(:runner) { Test::Script.runner(script_id) }
 
     it "mutates a shared instance variable across scripts" do
       instance = { 'number' => 5 }

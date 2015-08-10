@@ -15,19 +15,8 @@ module Test
       @index << @id unless @index.include?(@id)
     end
 
-    def name;         @name.value;         end
-    def name=(val);   @name.value = val;   end
     def source;       @source.value;       end
     def source=(val); @source.value = val; end
-
-    def self.find_by_name(name)
-      retval = nil
-      index.detect do |script_id|
-        script = find(script_id)
-        retval = script if script.name == name
-      end
-      retval
-    end
 
     def self.find(id)
       raise "Script #{id} not found" unless exists?(id)
@@ -42,7 +31,6 @@ module Test
 
     def connect_to_redis
       @index  = Redis::List.new(self.class.name)
-      @name   = Redis::Value.new("#{@id}::name")
       @source = Redis::Value.new("#{@id}::source")
     end
 

@@ -6,8 +6,8 @@ module Smelter
     #   I.e. as with an ActiveRecord model
     # end
     #
-    # def name
-    #   returns the name of the script
+    # def id
+    #   returns the id of the script
     # end
     #
     # def source
@@ -23,7 +23,7 @@ module Smelter
     end
 
     def register
-      instance_eval source, name, 1
+      instance_eval source, id, 1
     end
 
     module ClassMethods
@@ -38,13 +38,13 @@ module Smelter
         @registry ||= ThreadSafe::Cache.new
       end
 
-      def register(extension_name, &block)
+      def register(extension_id, &block)
         @registry ||= ThreadSafe::Cache.new
-        @registry[extension_name.to_s] = block
+        @registry[extension_id.to_s] = block
       end
 
-      def define(name, &block)
-        definition_proxy = DefinitionProxy.new(name)
+      def define(extension_id, &block)
+        definition_proxy = DefinitionProxy.new(extension_id)
         definition_proxy.instance_eval(&block)
       end
     end

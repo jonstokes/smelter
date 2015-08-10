@@ -7,12 +7,12 @@ module Smelter
     #
     #   runner_include Buzzsaw::DSL
     #
-    #   def self.find_by_name(name)
+    #   def self.find(id)
     #     returns a script object
     #   end
     #
-    #   def name
-    #     returns the name of the script
+    #   def id
+    #     returns the id of the script
     #   end
     #
     #   def source
@@ -30,7 +30,7 @@ module Smelter
       # NOTE: This returns a populated instance of ScriptRunner
       # that has all extensions defined on it and contains
       # Procs for the code defined in source
-      instance_eval source, name, 1
+      instance_eval source, id, 1
     end
 
     module ClassMethods
@@ -38,14 +38,14 @@ module Smelter
         Smelter::ScriptRunner.include(mod)
       end
 
-      def runner(name=nil)
-        return ScriptRunner.new unless name
-        script = find_by_name(name)
+      def runner(id=nil)
+        return ScriptRunner.new unless id
+        script = find(id)
         script.register
       end
 
-      def define(name, &block)
-        definition_proxy = DefinitionProxy.new(name)
+      def define(id, &block)
+        definition_proxy = DefinitionProxy.new(id)
         definition_proxy.instance_eval(&block)
       end
     end
